@@ -1,223 +1,72 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
-import { Todolist } from "./Todolist";
-import { v1 } from "uuid";
-import { Button } from "./components/Button";
+import { SuperButton } from "./components/SuperButton/SuperButton";
+import s from "./components/SuperButton/SuperButton.module.css";
+import { SuperCroses } from "./components/SuperButton/SuperCroses";
+import { Modal } from "./components/modal/Modal";
 
-type ObjectType = {
-  title: string;
-  filter: FilterValuesType;
-  tasks: Array<TasksType>;
-  students: Array<string>;
+export type CrosesType = {
+  id: number;
+  model: string;
+  size: string;
 };
-export type TasksType = {
-  taskId: string;
-  title: string;
-  isDone: boolean;
-};
-
-export type FilterValuesType = "all" | "active" | "completed";
 
 function App() {
-  const [todo, setTodo] = useState<Array<ObjectType>>([
-    {
-      title: "What to learn",
-      filter: "all",
-      tasks: [
-        { taskId: v1(), title: "HTML&CSS", isDone: true },
-        { taskId: v1(), title: "JS", isDone: true },
-      ],
-      students: [
-        "Rick Kane",
-        "Finnlay Bentley",
-        "Samia North",
-        "Isaac Morton",
-        "Lily-Ann Clifford",
-        "Thalia Park",
-        "Sapphire Cruz",
-        "Cieran Vazquez",
-        "Anya Estes",
-        "Dominika Field",
-        "Rosanna Chung",
-        "Safiyah Davey",
-        "Ryley Beasley",
-        "Kalvin Trejo",
-        "Evie-Mae Farrell",
-        "Juliet Valencia",
-        "Astrid Austin",
-        "Lyle Montgomery",
-        "Nisha Mora",
-        "Kylie Callaghan",
-        "Star Wilks",
-        "Marissa Colley",
-        "Asa Fuller",
-        "Leigh Kemp",
-        "Avleen Dawson",
-        "Sammy Bonilla",
-        "Acacia Becker",
-        "Coral Shepherd",
-        "Melina Molina",
-        "Kiran Bailey",
-        "Clara Escobar",
-        "Alexandru Horn",
-        "Brandon-Lee Mercado",
-        "Elouise Weston",
-        "King Long",
-        "Kerri Searle",
-        "Kanye Hamer",
-        "Elwood Benitez",
-        "Mikail Whitaker",
-        "Bobby Hardy",
-        "Talha Ferry",
-        "Priscilla Landry",
-        "Olivia-Grace Cain",
-        "Kiaan Wallace",
-        "Wesley Padilla90",
-        "Ella-Grace Wooten91",
-        "Kaif Molloy92",
-        "Kamal Broadhurst93",
-        "Bianca Ferrell94",
-        "Micheal Talbot95",
-      ],
-    },
-    {
-      title: "What to do",
-      filter: "all",
-      tasks: [
-        { taskId: v1(), title: "HTML&CSS2", isDone: true },
-        { taskId: v1(), title: "JS2", isDone: true },
-      ],
-      students: [
-        "Jago Wormald1",
-        "Saul Milne2",
-        "Aariz Hester3",
-        "Dion Reeve4",
-        "Anisa Ortega5",
-        "Blade Cisneros6",
-        "Malaikah Phelps7",
-        "Zeeshan Gallagher8",
-        "Isobella Vo9",
-        "Rizwan Mathis10",
-        "Menaal Leach11",
-        "Kian Walton12",
-        "Orion Lamb13",
-        "Faizah Huynh14",
-        "Crystal Vaughan15",
-        "Vivien Hickman16",
-        "Stuart Lu17",
-        "Karol Davison18",
-        "Dario Burns19",
-        "Chloe Rich20",
-        "Martyna Felix",
-        "Nida Glass",
-        "Maeve Miles",
-        "Hasnain Puckett",
-        "Ayman Cano",
-        "Safwan Perry",
-        "Fox Kelly",
-        "Louise Barlow",
-        "Malaki Mcgill",
-        "Leanna Cline",
-        "Willard Hodge",
-        "Amelia Dorsey",
-        "Kiah Porter",
-        "Jeanne Daly",
-        "Mohsin Armstrong",
-        "Laurie Rangel",
-        "Princess Tierney",
-        "Kasim Kendall",
-        "Darryl Cope",
-        "Elysha Ray",
-        "Liyana Harris",
-        "Kashif Blackburn",
-        "Atif Zimmerman",
-        "Sila Hartley",
-        "Ralphie Hebert",
-      ],
-    },
-  ]);
-
-  function removeTask(taskId: string, todolistId: number) {
-    setTodo(
-      todo.map((el, index) =>
-        index === todolistId
-          ? {
-              ...el,
-              tasks: [...el.tasks.filter((fl) => fl.taskId !== taskId)],
-            }
-          : el,
-      ),
-    );
-  }
-
-  function addTask(title: string, todolistId: number) {
-    let newTask: TasksType = { taskId: v1(), title: title, isDone: false };
-    setTodo(todo.map((el, index) => (index === todolistId ? { ...el, tasks: [newTask, ...el.tasks] } : el)));
-  }
-
-  function changeStatus(taskId: string, isDone: boolean, todolistId: number) {
-    setTodo(
-      todo.map((el, index) =>
-        index === todolistId
-          ? {
-              ...el,
-              tasks: el.tasks.map((m) => (m.taskId === taskId ? { ...m, isDone: isDone } : m)),
-            }
-          : el,
-      ),
-    );
-  }
-
-  function changeFilter(value: FilterValuesType, todolistId: number) {
-    setTodo(todo.map((el, index) => (index === todolistId ? { ...el, filter: value } : el)));
-  }
-
-  function removeTodolist(todolistId: number) {
-    setTodo(todo.filter((el, index) => index !== todolistId));
-  }
-
-  const removeAllTodolists = () => {
-    setTodo([]);
-  };
-
-  const removeAllTasksInOneTodo = (todolistId: number) => {
-    setTodo((prevState) => prevState.map((t, index) => (index === todolistId ? { ...t, tasks: [] } : t)));
-  };
-
+  const croses: CrosesType[] = [
+    { id: 1, model: "ADIDAS", size: "XXX" },
+    { id: 2, model: "ABIBAS", size: "YYY" },
+    { id: 3, model: "PUMA", size: "ZZZ" },
+  ];
   return (
-    <div className="App">
-      <div>
-        <Button title={"DelAllTodo"} onClick={removeAllTodolists} />
-      </div>
-
-      {todo.map((tl, index) => {
-        let allTodolistTasks = tl.tasks;
-        let tasksForTodolist = allTodolistTasks;
-
-        if (tl.filter === "active") {
-          tasksForTodolist = allTodolistTasks.filter((t) => !t.isDone);
-        }
-        if (tl.filter === "completed") {
-          tasksForTodolist = allTodolistTasks.filter((t) => t.isDone);
-        }
-
-        return (
-          <Todolist
-            key={index}
-            id={index}
-            title={tl.title}
-            tasks={tasksForTodolist}
-            students={tl.students}
-            removeTask={removeTask}
-            changeFilter={changeFilter}
-            addTask={addTask}
-            changeTaskStatus={changeStatus}
-            filter={tl.filter}
-            removeTodolist={removeTodolist}
-            removeAllTasksInOneTodo={removeAllTasksInOneTodo}
-          />
-        );
-      })}
+    <div className={s.divApp}>
+      {/*<SuperButton title={"Button"} onClick={() => {}} color={"red"} />*/}
+      {/*<SuperButton onClick={() => {}} color={"red"} backGround={"red"} className={s.redButton}>*/}
+      {/*  RED BUTTON*/}
+      {/*</SuperButton>*/}
+      {/*<SuperButton onClick={() => {}} color={"red"} backGround={"blue"} className={s.blueButton}>*/}
+      {/*  BLUE BUTTON*/}
+      {/*</SuperButton>*/}
+      {/**/}
+      {/*<SuperButton color={"red"}>RED BUTTON</SuperButton>*/}
+      {/*<SuperButton color={"secondary"}>SECONDARY BUTTON</SuperButton>*/}
+      {/*<SuperButton>DEFAULT BUTTON</SuperButton>*/}
+      {/*<SuperButton disabled>DISABLED BUTTON</SuperButton>*/}
+      {/**/}
+      {/*<SuperCroses croses={croses}>*/}
+      {/*  <SuperButton color={"red"}>RED BUTTON</SuperButton>*/}
+      {/*  <SuperButton color={"secondary"}>SECONDARY BUTTON</SuperButton>*/}
+      {/*  <p>*/}
+      {/*    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, animi autem consequuntur ducimus eum eveniet ex*/}
+      {/*    fuga hic id incidunt iure maiores minus omnis provident, qui rem saepe veniam voluptatum.*/}
+      {/*  </p>*/}
+      {/*</SuperCroses>*/}
+      {/*<SuperCroses croses={croses}>*/}
+      {/*  <SuperButton color={"red"}>RED BUTTON</SuperButton>*/}
+      {/*  <SuperButton color={"secondary"}>SECONDARY BUTTON</SuperButton>*/}
+      {/*  <SuperButton>DEFAULT BUTTON</SuperButton>*/}
+      {/*</SuperCroses>*/}
+      {/*<SuperCroses croses={croses}>*/}
+      {/*  <SuperButton>DEFAULT BUTTON</SuperButton>*/}
+      {/*  <p>*/}
+      {/*    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, animi autem consequuntur ducimus eum eveniet ex*/}
+      {/*    fuga hic id incidunt iure maiores minus omnis provident, qui rem saepe veniam voluptatum.*/}
+      {/*  </p>*/}
+      {/*</SuperCroses>*/}
+      <Modal>
+        <h3>Confident information</h3>
+        <input type={"text"} placeholder={"email"} />
+        <input type={"text"} placeholder={"pass"} />
+        <input type={"text"} placeholder={"pass"} />
+        <label>
+          <input type={"checkbox"} />I agree
+        </label>
+        <SuperButton>SEND</SuperButton>
+      </Modal>
+      {/*<Modal>*/}
+      {/*  <h3>Confident information</h3>*/}
+      {/*  <input type={"text"} placeholder={"email"} />*/}
+      {/*  <input type={"text"} placeholder={"pass"} />*/}
+      {/*</Modal>*/}
     </div>
   );
 }
