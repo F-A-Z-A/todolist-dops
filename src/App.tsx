@@ -1,74 +1,121 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
-import { SuperButton } from "./components/SuperButton/SuperButton";
-import s from "./components/SuperButton/SuperButton.module.css";
-import { SuperCroses } from "./components/SuperButton/SuperCroses";
-import { Modal } from "./components/modal/Modal";
+import { Country } from "./Country";
+import { v1 } from "uuid";
 
-export type CrosesType = {
-  id: number;
-  model: string;
-  size: string;
+export type BanknotesType = "USD" | "RUB" | "All";
+export type MoneyType = {
+  banknote: BanknotesType;
+  nominal: number;
+  id: string;
+};
+
+const defaultMoney: MoneyType[] = [
+  { banknote: "USD", nominal: 100, id: v1() },
+  { banknote: "USD", nominal: 100, id: v1() },
+  { banknote: "RUB", nominal: 100, id: v1() },
+  { banknote: "USD", nominal: 100, id: v1() },
+  { banknote: "USD", nominal: 100, id: v1() },
+  { banknote: "RUB", nominal: 100, id: v1() },
+  { banknote: "USD", nominal: 100, id: v1() },
+  { banknote: "RUB", nominal: 100, id: v1() },
+];
+
+export const moneyFilter = (money: MoneyType[], filter: BanknotesType): MoneyType[] => {
+  if (filter === "All") {
+    return money;
+  }
+  return money.filter((el) => el.banknote === filter);
 };
 
 function App() {
-  const croses: CrosesType[] = [
-    { id: 1, model: "ADIDAS", size: "XXX" },
-    { id: 2, model: "ABIBAS", size: "YYY" },
-    { id: 3, model: "PUMA", size: "ZZZ" },
-  ];
+  const [money, setMoney] = useState<MoneyType[]>(defaultMoney);
+  const [filterValue, setFilterValue] = useState<BanknotesType>("All");
+  const filteredMoney = moneyFilter(money, filterValue);
+  const addMoney = (banknote: BanknotesType) => {
+    setMoney([{ banknote: banknote, nominal: 100, id: v1() }, ...money]);
+  };
+
+  const removeMoney = (banknote: BanknotesType) => {
+    // const test = money.find((el) => el.banknote === banknote);
+    // if (test) {
+    //   setMoney(money.filter((el) => el.id !== test.id));
+    // }
+    const index = money.findIndex((el) => el.banknote === banknote);
+    if (index !== -1) {
+      setMoney(money.filter((_, i) => i !== index));
+    }
+  };
+
   return (
-    <div className={s.divApp}>
-      {/*<SuperButton title={"Button"} onClick={() => {}} color={"red"} />*/}
-      {/*<SuperButton onClick={() => {}} color={"red"} backGround={"red"} className={s.redButton}>*/}
-      {/*  RED BUTTON*/}
-      {/*</SuperButton>*/}
-      {/*<SuperButton onClick={() => {}} color={"red"} backGround={"blue"} className={s.blueButton}>*/}
-      {/*  BLUE BUTTON*/}
-      {/*</SuperButton>*/}
-      {/**/}
-      {/*<SuperButton color={"red"}>RED BUTTON</SuperButton>*/}
-      {/*<SuperButton color={"secondary"}>SECONDARY BUTTON</SuperButton>*/}
-      {/*<SuperButton>DEFAULT BUTTON</SuperButton>*/}
-      {/*<SuperButton disabled>DISABLED BUTTON</SuperButton>*/}
-      {/**/}
-      {/*<SuperCroses croses={croses}>*/}
-      {/*  <SuperButton color={"red"}>RED BUTTON</SuperButton>*/}
-      {/*  <SuperButton color={"secondary"}>SECONDARY BUTTON</SuperButton>*/}
-      {/*  <p>*/}
-      {/*    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, animi autem consequuntur ducimus eum eveniet ex*/}
-      {/*    fuga hic id incidunt iure maiores minus omnis provident, qui rem saepe veniam voluptatum.*/}
-      {/*  </p>*/}
-      {/*</SuperCroses>*/}
-      {/*<SuperCroses croses={croses}>*/}
-      {/*  <SuperButton color={"red"}>RED BUTTON</SuperButton>*/}
-      {/*  <SuperButton color={"secondary"}>SECONDARY BUTTON</SuperButton>*/}
-      {/*  <SuperButton>DEFAULT BUTTON</SuperButton>*/}
-      {/*</SuperCroses>*/}
-      {/*<SuperCroses croses={croses}>*/}
-      {/*  <SuperButton>DEFAULT BUTTON</SuperButton>*/}
-      {/*  <p>*/}
-      {/*    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, animi autem consequuntur ducimus eum eveniet ex*/}
-      {/*    fuga hic id incidunt iure maiores minus omnis provident, qui rem saepe veniam voluptatum.*/}
-      {/*  </p>*/}
-      {/*</SuperCroses>*/}
-      <Modal>
-        <h3>Confident information</h3>
-        <input type={"text"} placeholder={"email"} />
-        <input type={"text"} placeholder={"pass"} />
-        <input type={"text"} placeholder={"pass"} />
-        <label>
-          <input type={"checkbox"} />I agree
-        </label>
-        <SuperButton>SEND</SuperButton>
-      </Modal>
-      {/*<Modal>*/}
-      {/*  <h3>Confident information</h3>*/}
-      {/*  <input type={"text"} placeholder={"email"} />*/}
-      {/*  <input type={"text"} placeholder={"pass"} />*/}
-      {/*</Modal>*/}
+    <div className="App">
+      <Country data={filteredMoney} setFilterValue={setFilterValue} addMoney={addMoney} removeMoney={removeMoney} />
     </div>
   );
 }
 
 export default App;
+
+// -------------------------------------------------------------------------------------------
+// import React, {useState} from 'react';
+// import './App.css';
+// import {Country} from "./Country";
+// import {v1} from "uuid";
+//
+// export type BanknotsType = '' // создадим типы для banknotes -он может быть 'DOLLARS', 'RUBLS' или 'All'
+// export type MoneyType = {
+//     banknote: BanknotsType
+//     nominal: any// не ленимся, убираем заглушку, и пишем правильный тип)
+//     id: any// ложку за Димыча, за...
+// }
+//
+// let defaultMoney: any = [  // типизируем
+//     {banknote: 'USD', nominal: 100, id: v1()},
+//     {banknote: 'USD', nominal: 100, id: v1()},
+//     {banknote: 'RUB', nominal: 100, id: v1()},
+//     {banknote: 'USD', nominal: 100, id: v1()},
+//     {banknote: 'USD', nominal: 100, id: v1()},
+//     {banknote: 'RUB', nominal: 100, id: v1()},
+//     {banknote: 'USD', nominal: 100, id: v1()},
+//     {banknote: 'RUB', nominal: 100, id: v1()},
+// ]
+//
+//
+// export const moneyFilter = (money: any, filter: any): any => {
+//     //если пришел filter со значением 'All', то возвращаем все банкноты
+//     //return money.filter... ну да, придется фильтровать
+// }
+//
+//
+// function App() {
+//     // убираем заглушки в типизации и вставляем в качестве инициализационного значения defaultMoney
+//     const [money, setMoney] = useState<any>([])
+//     const [filterValue, setFilterValue] = useState<any>('')   // по умолчанию указываем все банкноты
+//
+//     // а вот сейчас притормаживаем. И вдумчиво: константа filteredMoney получает результат функции moneyFilter
+//     // в функцию передаем деньги и фильтр, по которому ихбудем выдавать(ретёрнуть)
+//     const filteredMoney = moneyFilter(грошы, фильтръ)
+//
+//     const addMoney = (banknote: BanknotsType) => {
+//         // Добавление денег сделаем в последнюю очередь, после настройки фильтров и отрисовки денег
+//     }
+//
+//     const removeMoney = (banknote: BanknotsType) => {
+//         // Снятие денег сделаем в последнюю очередь, после настройки фильтров и отрисовки денег
+//        // const index = money.findIndex
+//        //  if (index !== -1) {
+//        //      setMoney(money.filter((el, i) => ...));
+//        //  }
+//     }
+//
+//     return (
+//         <div className="App">
+//             <Country
+//                 data={filteredMoney}   //отрисовать будем деньги после фильтрации
+//                 setFilterValue={setFilterValue}  //useState передаем? Так можно было?!
+//             />
+//         </div>
+//     );
+// }
+//
+// export default App;
