@@ -1,44 +1,26 @@
-import React, { ChangeEvent, KeyboardEvent, useState } from "react";
-import { FilterValuesType, InTaskType } from "./App";
-
-export type TaskType = {
-  id: string;
-  title: string;
-  isDone: boolean;
-};
+import React, { ChangeEvent, useState, KeyboardEvent } from "react";
+import { FilterValuesType, TaskType } from "./App";
 
 type PropsType = {
   todolistId: string;
   title: string;
-  tasks: TaskType[];
-  removeTask: (todolistId: string, taskId: string) => void;
-  changeFilter: (todolistId: string, value: FilterValuesType) => void;
-  addTask: (todolistId: string, title: string) => void;
-  changeTaskStatus: (todolistId: string, taskId: string, isDone: boolean) => void;
   filter: FilterValuesType;
-  removeTodolist: (todolistId: string) => void;
+  tasks: TaskType[];
+  addTask: (todolistId: string, title: string) => void;
+  removeTask: (todolistId: string, taskId: string) => void;
+  changeTaskStatus: (todolistId: string, taskId: string, isDone: boolean) => void;
+  changeFilter: (todolistId: string, value: FilterValuesType) => void;
+  removeTodolist: (id: string) => void;
 };
 
 export function Todolist(props: PropsType) {
-  const [title, setTitle] = useState("");
-  const [error, setError] = useState<string | null>(null);
-
-  const GetFilteredTasks = () => {
-    let tasksForTodolist = props.tasks;
-    if (props.filter === "active") {
-      tasksForTodolist = props.tasks.filter((t) => !t.isDone);
-    }
-    if (props.filter === "completed") {
-      tasksForTodolist = props.tasks.filter((t) => t.isDone);
-    }
-    return tasksForTodolist;
-  };
-
-  const filteredTasks = GetFilteredTasks();
+  let [title, setTitle] = useState("");
+  let [error, setError] = useState<string | null>(null);
 
   const addTask = () => {
-    if (title.trim() !== "") {
-      props.addTask(props.todolistId, title.trim());
+    let newTitle = title.trim();
+    if (newTitle !== "") {
+      props.addTask(props.todolistId, newTitle);
       setTitle("");
     } else {
       setError("Title is required");
@@ -56,19 +38,29 @@ export function Todolist(props: PropsType) {
     }
   };
 
+  const removeTodolist = () => props.removeTodolist(props.todolistId);
+
   const onAllClickHandler = () => props.changeFilter(props.todolistId, "all");
   const onActiveClickHandler = () => props.changeFilter(props.todolistId, "active");
   const onCompletedClickHandler = () => props.changeFilter(props.todolistId, "completed");
 
-  const removeTodolistHandler = () => {
-    props.removeTodolist(props.todolistId);
+  const getTasksForTodolist = () => {
+    let tasksForTodolist = props.tasks;
+    if (props.filter === "active") {
+      tasksForTodolist = tasksForTodolist.filter((t) => !t.isDone);
+    }
+    if (props.filter === "completed") {
+      tasksForTodolist = tasksForTodolist.filter((t) => t.isDone);
+    }
+    return tasksForTodolist;
   };
 
   return (
     <div>
       <h3>
+        {" "}
         {props.title}
-        <button onClick={removeTodolistHandler}>X</button>
+        <button onClick={removeTodolist}>x</button>
       </h3>
       <div>
         <input
@@ -81,14 +73,15 @@ export function Todolist(props: PropsType) {
         {error && <div className="error-message">{error}</div>}
       </div>
       <ul>
-        {filteredTasks.map((t) => {
-          const onClickHandler = () => props.removeTask(props.todolistId, t.id);
+        {getTasksForTodolist().map((t) => {
+          const onClickHandler = () => props.removeTask(props.todolistId, t.taskId);
           const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-            props.changeTaskStatus(props.todolistId, t.id, e.currentTarget.checked);
+            let newIsDoneValue = e.currentTarget.checked;
+            props.changeTaskStatus(props.todolistId, t.taskId, newIsDoneValue);
           };
 
           return (
-            <li key={t.id} className={t.isDone ? "is-done" : ""}>
+            <li key={t.taskId} className={t.isDone ? "is-done" : ""}>
               <input type="checkbox" onChange={onChangeHandler} checked={t.isDone} />
               <span>{t.title}</span>
               <button onClick={onClickHandler}>x</button>
